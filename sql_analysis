@@ -1,0 +1,114 @@
+-- 1. Basic Overview
+SELECT COUNT(*) AS total_records,
+       COUNT(DISTINCT gender) AS unique_genders,
+       MIN(age) AS min_age,
+       MAX(age) AS max_age
+FROM diabetes_data;
+
+-- 2. Diabetes prevalence (overall %)
+SELECT 
+    COUNT(CASE WHEN diabetes = 1 THEN 1 END) AS diabetic_patients,
+    COUNT(CASE WHEN diabetes = 0 THEN 1 END) AS non_diabetic_patients,
+    ROUND(COUNT(CASE WHEN diabetes = 1 THEN 1 END) * 100.0 / COUNT(*), 2) AS diabetes_rate_percentage
+FROM diabetes_data;
+
+-- 3. Diabetes count by gender
+SELECT gender,
+       COUNT(*) AS total_patients,
+       COUNT(CASE WHEN diabetes = 1 THEN 1 END) AS diabetic_patients,
+       ROUND(COUNT(CASE WHEN diabetes = 1 THEN 1 END) * 100.0 / COUNT(*), 2) AS diabetes_rate_percentage
+FROM diabetes_data
+GROUP BY gender;
+
+-- 4. Diabetes by age groups (10-year bins)
+SELECT 
+    CONCAT(FLOOR(age/10)*10, '-', FLOOR(age/10)*10+9) AS age_group,
+    COUNT(*) AS total_patients,
+    COUNT(CASE WHEN diabetes = 1 THEN 1 END) AS diabetic_patients,
+    ROUND(COUNT(CASE WHEN diabetes = 1 THEN 1 END) * 100.0 / COUNT(*), 2) AS diabetes_rate_percentage
+FROM diabetes_data
+GROUP BY age_group
+ORDER BY age_group;
+
+-- 5. Hypertension & heart disease vs diabetes
+SELECT 
+    hypertension,
+    heart_disease,
+    COUNT(*) AS total_patients,
+    COUNT(CASE WHEN diabetes = 1 THEN 1 END) AS diabetic_patients,
+    ROUND(COUNT(CASE WHEN diabetes = 1 THEN 1 END) * 100.0 / COUNT(*), 2) AS diabetes_rate_percentage
+FROM diabetes_data
+GROUP BY hypertension, heart_disease
+ORDER BY diabetes_rate_percentage DESC;
+
+-- 6. Smoking history vs diabetes
+SELECT smoking_history,
+       COUNT(*) AS total_patients,
+       COUNT(CASE WHEN diabetes = 1 THEN 1 END) AS diabetic_patients,
+       ROUND(COUNT(CASE WHEN diabetes = 1 THEN 1 END) * 100.0 / COUNT(*), 2) AS diabetes_rate_percentage
+FROM diabetes_data
+GROUP BY smoking_history
+ORDER BY diabetes_rate_percentage DESC;
+
+-- 7. Average BMI, HbA1c, and glucose for diabetics vs non-diabetics
+SELECT diabetes,
+       ROUND(AVG(bmi), 2) AS avg_bmi,
+       ROUND(AVG(HbA1c_level), 2) AS avg_HbA1c,
+       ROUND(AVG(blood_glucose_level), 2) AS avg_glucose
+FROM diabetes_data
+GROUP BY diabetes;
+
+-- 8. Top 5 BMI categories with highest diabetes prevalence
+SELECT 
+    CASE
+        WHEN bmi < 18.5 THEN 'Underweight'
+        WHEN bmi >= 18.5 AND bmi < 25 THEN 'Normal'
+        WHEN bmi >= 25 AND bmi < 30 THEN 'Overweight'
+        ELSE 'Obese'
+    END AS bmi_category,
+    COUNT(*) AS total_patients,
+    COUNT(CASE WHEN diabetes = 1 THEN 1 END) AS diabetic_patients,
+    ROUND(COUNT(CASE WHEN diabetes = 1 THEN 1 END) * 100.0 / COUNT(*), 2) AS diabetes_rate_percentage
+FROM diabetes_data
+GROUP BY bmi_category
+ORDER BY diabetes_rate_percentage DESC;
+
+-- 9. Which factor is strongest? (HbA1c vs Glucose vs BMI buckets)
+SELECT 
+    CASE
+        WHEN HbA1c_level < 5.7 THEN 'Normal (<5.7)'
+        WHEN HbA1c_level BETWEEN 5.7 AND 6.4 THEN 'Prediabetes (5.7-6.4)'
+        ELSE 'Diabetes (>=6.5)'
+    END AS HbA1c_group,
+    COUNT(*) AS total_patients,
+    COUNT(CASE WHEN diabetes = 1 THEN 1 END) AS diabetic_patients,
+    ROUND(COUNT(CASE WHEN diabetes = 1 THEN 1 END) * 100.0 / COUNT(*), 2) AS diabetes_rate_percentage
+FROM diabetes_data
+GROUP BY HbA1c_group
+ORDER BY diabetes_rate_percentage DESC;
+
+-- 10. Correlation-style grouping: high glucose & high BMI patients
+SELECT 
+    CASE 
+        WHEN blood_glucose_level < 100 THEN 'Normal (<100)'
+        WHEN blood_glucose_level BETWEEN 100 AND 125 THEN 'Prediabetic (100-125)'
+        ELSE 'Diabetic (>=126)'
+    END AS glucose_category,
+    CASE
+        WHEN bmi < 25 THEN 'Healthy BMI (<25)'
+        WHEN bmi BETWEEN 25 AND 30 THEN 'Overweight (25-30)'
+        ELSE 'Obese (>=30)'
+    END AS bmi_category,
+    COUNT(*) AS total_patients,
+    COUNT(CASE WHEN diabetes = 1 THEN 1 END) AS diabetic_patients,
+    ROUND(COUNT(CASE WHEN diabetes = 1 THEN 1 END) * 100.0 / COUNT(*), 2) AS diabetes_rate_percentage
+FROM diabetes_data
+GROUP BY glucose_category, bmi_category
+ORDER BY diabetes_rate_percentage DESC;
+
+-- 11. Top 10 oldest diabetic patients with highest glucose levels
+SELECT gender, age, bmi, HbA1c_level, blood_glucose_level
+FROM diabetes_data
+WHERE diabetes = 1
+ORDER BY age DESC, blood_glucose_level DESC
+LIMIT 10;
