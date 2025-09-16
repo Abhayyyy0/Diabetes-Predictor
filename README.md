@@ -1,41 +1,42 @@
 🩺 Diabetes Prediction Data Analysis (SQL Project)
+
 📌 Project Overview
 
-Diabetes is a major global health challenge, and early detection of risk factors is crucial to prevention and management. This project uses SQL to analyze a healthcare dataset containing demographic, lifestyle, and medical information of patients.
+Diabetes is a major global health challenge, and early detection of risk factors is crucial for prevention and management.
+This project performs structured data analysis on a healthcare dataset using SQL Server to uncover patterns and actionable insights related to diabetes risk factors.
 
-The objective is to:
+✅ Project Goals
 
-Explore patterns in diabetes prevalence.
+Analyze prevalence of diabetes in the dataset
 
-Understand how age, gender, lifestyle habits, and medical conditions correlate with diabetes.
+Explore how age, gender, medical conditions, and lifestyle habits impact diabetes
 
-Identify high-risk patient groups based on BMI, blood glucose, and HbA1c levels.
+Identify high-risk patient groups using BMI, blood glucose, and HbA1c levels
 
-This project demonstrates how structured SQL analysis can provide actionable insights in healthcare analytics.
+Demonstrate efficient use of SQL for healthcare data analytics
 
 📂 Project Structure
-diabetes prediction
+diabetes-prediction-sql/
 │
 ├── data/
-│   └── diabetes_prediction_dataset.csv   # dataset used in the project
+│   └── diabetes_prediction_dataset.csv    # Dataset (must be downloaded separately)
 │
 ├── sql/
-│   ├── 01_create_table.sql               # SQL schema creation
-│   ├── 02_sql_analysis.sql           # queries for analysis
+│   ├── 01_create_table.sql                # Table schema creation
+│   ├── 02_sql_analysis.sql               # SQL queries for analysis
 │
-└── README.md                             # project documentation
+├── README.md                             # Project documentation
 
-🗂 Dataset
+🗄 Dataset Information
 
-Source: Kaggle – Diabetes Prediction Dataset
+📚 Source: Kaggle – Diabetes Prediction Dataset
 
-Size: ~100,000 patient records
+📊 Size: ~100,000 patient records
+🎯 Target Column: diabetes (0 = Non-diabetic, 1 = Diabetic)
 
-Target Variable: diabetes (0 = Non-diabetic, 1 = Diabetic)
-
-Columns:
 Column	Description
-gender	Male, Female, or Other
+
+gender	Male, Female, Other
 age	Patient age in years
 hypertension	0 = No, 1 = Yes
 heart_disease	0 = No, 1 = Yes
@@ -44,117 +45,62 @@ bmi	Body Mass Index (kg/m²)
 HbA1c_level	Hemoglobin A1c test result (%)
 blood_glucose_level	Glucose concentration (mg/dL)
 diabetes	0 = Non-diabetic, 1 = Diabetic
-🗄 Database & Schema
 
-The dataset was imported into a relational database. A single table diabetes_data was created:
+⚡ How to Set Up & Access Dataset
 
-CREATE TABLE diabetes_data (
-    gender VARCHAR(10),
-    age INT,
-    hypertension TINYINT,
-    heart_disease TINYINT,
-    smoking_history VARCHAR(20),
-    bmi DECIMAL(5,2),
-    HbA1c_level DECIMAL(4,2),
-    blood_glucose_level INT,
-    diabetes TINYINT
-);
-
-🔎 SQL Analysis
-
-The following analyses were performed:
-
-1. Dataset Overview
-
-Record count, unique genders, min/max age.
-
-2. Diabetes Prevalence
-
-Overall percentage of diabetic patients.
-
-Gender-based diabetes distribution.
-
-3. Age-wise Analysis
-
-Patients grouped into 10-year bins (0–9, 10–19, …).
-
-Diabetes prevalence by age group.
-
-4. Comorbidities
-
-Hypertension and heart disease vs diabetes rates.
-
-5. Lifestyle Factors
-
-Smoking history vs diabetes prevalence.
-
-6. Medical Indicators
-
-Average BMI, HbA1c, and glucose (diabetic vs non-diabetic).
-
-BMI categories (Underweight, Normal, Overweight, Obese) vs diabetes.
-
-HbA1c groups (Normal, Prediabetes, Diabetes) vs diabetes.
-
-Blood glucose categories vs diabetes.
-
-7. Correlations
-
-High glucose & high BMI combined risk analysis.
-
-8. Patient-Level Insights
-
-Top 10 oldest diabetic patients with highest glucose levels.
-
-📊 Key Findings
-
-Overall prevalence: Diabetes affects a significant portion of the population.
-
-Age impact: Risk rises sharply with age, especially after 40+.
-
-Gender differences: Slight variations, but both genders show high prevalence in older age groups.
-
-Comorbidities: Patients with hypertension or heart disease have much higher diabetes rates.
-
-Lifestyle: Certain smoking histories (former/current smokers) show elevated risk.
-
-BMI: Overweight and obese patients have significantly higher diabetes percentages than normal BMI individuals.
-
-Medical indicators:
-
-HbA1c ≥ 6.5% strongly indicates diabetes.
-
-Blood glucose ≥ 126 mg/dL correlates with diabetes prevalence.
-
-High-risk group: Patients who are both obese and have high glucose levels show the highest prevalence rates.
-
-🚀 How to Run
-
-Clone this repository:
+1️⃣ Clone the repo:
 
 git clone https://github.com/your-username/diabetes-sql-analysis.git
 
 
-Create a new database in MySQL / PostgreSQL / SQL Server.
+2️⃣ Create a new database in your SQL Server instance.
 
-Run sql/01_create_table.sql to create the schema.
+3️⃣ Run the table schema script:
 
-Import the dataset (data/diabetes_prediction_dataset.csv) into the table.
+sql/01_create_table.sql
 
-Run sql/02_analysis_queries.sql to generate insights.
 
-📌 Future Enhancements
+4️⃣ Place the dataset diabetes_prediction_dataset.csv manually on your local machine, for example:
 
-Add a visualization layer (Power BI/Tableau) for better storytelling.
+C:\data\diabetes_prediction_dataset.csv
 
-Automate ingestion & reporting with Python + SQL pipeline.
 
-Extend analysis with predictive modeling (logistic regression / ML).
+5️⃣ Run the following command to import the dataset:
 
-Add time-series analysis if temporal data becomes available.
+BULK INSERT diabetes_data
+FROM 'C:\data\diabetes_prediction_dataset.csv'
+WITH (
+    FIELDTERMINATOR = ',',
+    ROWTERMINATOR = '\n',
+    FIRSTROW = 2
+);
+
+
+👉 ⚠️ Make sure the file path matches your local setup.
+👉 Ensure proper file permissions for SQL Server to access the file.
+
+📊 Analysis Highlights
+
+✔️ Overall dataset summary (record count, averages)
+✔️ Diabetes prevalence by gender, age group, and smoking history
+✔️ Impact of comorbidities (hypertension, heart disease)
+✔️ Medical indicators correlation:
+ - High BMI & high blood glucose strongly linked to diabetes
+ - HbA1c ≥ 6.5% indicates high risk
+
+✔️ Top 10 oldest diabetic patients with highest glucose levels identified.
+
+🚀 Future Enhancements
+
+Visualization layer (Power BI / Tableau)
+
+Automated ETL pipeline (Python + SQL)
+
+Predictive modeling (Logistic Regression, ML)
+
+Time-series analysis if temporal data becomes available
 
 📝 Author
 
 👤 Abhay Mudgal
 📧 abhaymudgal04@gmail.com
-
