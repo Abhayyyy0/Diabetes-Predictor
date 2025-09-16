@@ -4,17 +4,20 @@
 -- Purpose: Create database, import dataset, clean data, add derived columns
 -- ================================================
 
--- 1. Create database
 CREATE DATABASE diabetes_project;
+GO
 
 -- Switch to database (use appropriate command depending on SQL flavor)
 -- MySQL:
 USE diabetes_project;
--- PostgreSQL: \c diabetes_project
+GO
 
--- 2. Create main table for diabetes dataset
+IF OBJECT_ID('diabetes_data', 'U') IS NOT NULL
+    DROP TABLE diabetes_data;
+GO
+
 CREATE TABLE diabetes_data (
-    id INT AUTO_INCREMENT PRIMARY KEY,   -- Unique identifier
+    id INT IDENTITY(1,1) PRIMARY KEY,
     gender VARCHAR(10),
     age INT,
     hypertension INT,
@@ -25,19 +28,19 @@ CREATE TABLE diabetes_data (
     blood_glucose_level INT,
     diabetes INT
 );
+GO
+
 
 -- 3. Load CSV data
--- MySQL example:
--- LOAD DATA INFILE '/path/to/diabetes_prediction_dataset.csv'
--- INTO TABLE diabetes_data
--- FIELDS TERMINATED BY ','
--- LINES TERMINATED BY '\n'
--- IGNORE 1 ROWS
--- (gender, age, hypertension, heart_disease, smoking_history, bmi, HbA1c_level, blood_glucose_level, diabetes);
+ BULK INSERT diabetes_data
+FROM 'C:\data sql\diabetes_data.csv'
+WITH (
+    FIELDTERMINATOR = ',',
+    ROWTERMINATOR = '\n',
+    FIRSTROW = 2
+);
 
--- PostgreSQL example:
--- \copy diabetes_data(gender, age, hypertension, heart_disease, smoking_history, bmi, HbA1c_level, blood_glucose_level, diabetes)
--- FROM '/path/to/diabetes_prediction_dataset.csv' DELIMITER ',' CSV HEADER;
+-- (gender, age, hypertension, heart_disease, smoking_history, bmi, HbA1c_level, blood_glucose_level, diabetes);
 
 -- 4. Handle missing or invalid values
 -- Replace NULL or blank gender with 'Unknown'
@@ -52,7 +55,10 @@ WHERE bmi IS NULL;
 
 -- 5. Add derived columns
 -- Age groups
-ALTER TABLE diabetes_data ADD COLUMN age_group VARCHAR(20);
+ALTER TABLE diabetes_data ADD age_group VARCHAR(20);
+ALTER TABLE diabetes_data ADD bmi_category VARCHAR(20);
+ALTER TABLE diabetes_data ADD hba1c_category VARCHAR(20);
+
 
 UPDATE diabetes_data
 SET age_group = CASE
@@ -62,8 +68,7 @@ SET age_group = CASE
     ELSE '65+'
 END;
 
--- BMI categories
-ALTER TABLE diabetes_data ADD COLUMN bmi_category VARCHAR(20);
+
 
 UPDATE diabetes_data
 SET bmi_category = CASE
@@ -73,8 +78,7 @@ SET bmi_category = CASE
     ELSE 'Obese'
 END;
 
--- HbA1c categories
-ALTER TABLE diabetes_data ADD COLUMN hba1c_category VARCHAR(20);
+
 
 UPDATE diabetes_data
 SET hba1c_category = CASE
@@ -85,7 +89,3 @@ END;
 
 -- 6. Verify row count
 SELECT COUNT(*) AS total_records FROM diabetes_data;
-
--- ================================================
--- END OF FILE
--- ================================================
