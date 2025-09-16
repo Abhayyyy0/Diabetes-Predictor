@@ -1,29 +1,29 @@
 🩺 Diabetes Prediction Data Analysis (SQL Project)
-
 📌 Project Overview
 
 Diabetes is a major global health challenge, and early detection of risk factors is crucial for prevention and management.
-This project performs structured data analysis on a healthcare dataset using SQL Server to uncover patterns and actionable insights related to diabetes risk factors.
+This project uses SQL Server to analyze a healthcare dataset containing demographic, lifestyle, and medical information of patients.
 
-✅ Project Goals
+The objective is to:
 
-Analyze prevalence of diabetes in the dataset
+Explore patterns in diabetes prevalence
 
-Explore how age, gender, medical conditions, and lifestyle habits impact diabetes
+Understand how age, gender, lifestyle habits, and medical conditions correlate with diabetes
 
-Identify high-risk patient groups using BMI, blood glucose, and HbA1c levels
+Identify high-risk patient groups based on BMI, blood glucose, and HbA1c levels
 
-Demonstrate efficient use of SQL for healthcare data analytics
+Generate an executive summary report with actionable insights
 
 📂 Project Structure
 diabetes-prediction-sql/
 │
 ├── data/
-│   └── diabetes_prediction_dataset.csv    # Dataset (must be downloaded separately)
+│   └── diabetes_prediction_dataset.csv    # Dataset file (must be downloaded manually)
 │
 ├── sql/
 │   ├── 01_create_table.sql                # Table schema creation
-│   ├── 02_sql_analysis.sql               # SQL queries for analysis
+│   ├── 02_sql_analysis.sql               # Exploratory data analysis queries
+│   └── 03_summary_report.sql             # Executive summary report
 │
 ├── README.md                             # Project documentation
 
@@ -35,7 +35,6 @@ diabetes-prediction-sql/
 🎯 Target Column: diabetes (0 = Non-diabetic, 1 = Diabetic)
 
 Column	Description
-
 gender	Male, Female, Other
 age	Patient age in years
 hypertension	0 = No, 1 = Yes
@@ -45,27 +44,26 @@ bmi	Body Mass Index (kg/m²)
 HbA1c_level	Hemoglobin A1c test result (%)
 blood_glucose_level	Glucose concentration (mg/dL)
 diabetes	0 = Non-diabetic, 1 = Diabetic
+⚡ How to Set Up & Run the Project
 
-⚡ How to Set Up & Access Dataset
-
-1️⃣ Clone the repo:
+1️⃣ Clone the repository:
 
 git clone https://github.com/your-username/diabetes-sql-analysis.git
 
 
 2️⃣ Create a new database in your SQL Server instance.
 
-3️⃣ Run the table schema script:
+3️⃣ Run the schema creation script to create the table:
 
 sql/01_create_table.sql
 
 
-4️⃣ Place the dataset diabetes_prediction_dataset.csv manually on your local machine, for example:
+4️⃣ Place the dataset CSV file on your local machine, for example:
 
 C:\data\diabetes_prediction_dataset.csv
 
 
-5️⃣ Run the following command to import the dataset:
+5️⃣ Import the dataset into the database using BULK INSERT:
 
 BULK INSERT diabetes_data
 FROM 'C:\data\diabetes_prediction_dataset.csv'
@@ -76,29 +74,33 @@ WITH (
 );
 
 
-👉 ⚠️ Make sure the file path matches your local setup.
-👉 Ensure proper file permissions for SQL Server to access the file.
+⚠️ Ensure the file path matches your setup and SQL Server has file access permissions.
 
-📊 Analysis Highlights
+6️⃣ Run the exploratory analysis queries:
 
-✔️ Overall dataset summary (record count, averages)
-✔️ Diabetes prevalence by gender, age group, and smoking history
-✔️ Impact of comorbidities (hypertension, heart disease)
-✔️ Medical indicators correlation:
- - High BMI & high blood glucose strongly linked to diabetes
- - HbA1c ≥ 6.5% indicates high risk
+sql/02_sql_analysis.sql
 
-✔️ Top 10 oldest diabetic patients with highest glucose levels identified.
+
+7️⃣ Run the executive summary report:
+
+sql/03_summary_report.sql
+
+📊 Key Insights From Analysis
+
+✔️ Overall diabetes prevalence among the dataset
+✔️ Impact of age, gender, and lifestyle habits on diabetes risk
+✔️ Comorbidities (hypertension, heart disease) strongly linked to diabetes
+✔️ High-risk patient identification using a custom risk score
+✔️ Prediabetic population characteristics
+✔️ Patients requiring immediate medical attention
+✔️ Top oldest diabetic patients with highest glucose levels
 
 🚀 Future Enhancements
 
-Visualization layer (Power BI / Tableau)
-
-Automated ETL pipeline (Python + SQL)
-
-Predictive modeling (Logistic Regression, ML)
-
-Time-series analysis if temporal data becomes available
+✅ Add visualization layer (Power BI / Tableau)
+✅ Automate ETL pipeline (Python + SQL)
+✅ Predictive modeling with Logistic Regression / ML
+✅ Time-series analysis if temporal data becomes available
 
 📝 Author
 
